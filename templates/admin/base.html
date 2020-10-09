@@ -1,0 +1,237 @@
+{% load i18n static %}
+<!DOCTYPE html>
+
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %} dir="rtl" {% endif %} >
+<head>
+    <title>  {% block title %} {% endblock %} </title>
+    <link rel="icon" href="/media/favicon3.jpg" />
+    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %} {% endblock %}">
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}" type="text/css" />
+
+        <!--fontawesome 5-->
+     <!--for font icon-->
+    <link rel="stylesheet" href="{% static 'css/fontawesome_5/css/all.css' %}" type="text/css" />
+    <!--<script src="{% static 'css/fontawesome_5/js/all.js' %}"></script> for svg icon-->
+
+    <!--fontawesome 4-->
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" type="text/css" />
+
+    <!--ioni icon-->
+    <link rel="stylesheet" href="{% static 'css/ionicons.css' %}" type="text/css" />
+
+    <!--for extra stylesheet-->
+    {% block extrastyle %}  {% endblock %}
+
+    {% if LANGUAGE_BIDI %}
+        <link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}">
+    {% endif %}
+
+    <!--for extra head-->
+    {% block extrahead %} {% endblock %}
+
+    {% block responsive %}
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive.css" %}">
+        {% if LANGUAGE_BIDI %}
+            <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive_rtl.css" %}">
+        {% endif %}
+    {% endblock %}
+
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE">
+    {% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}  {% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
+
+<div class="liquid_container">
+
+    <!-- Middle Container -->
+    <div id="container">
+        
+            <!-- Header -->
+      {% block header %}
+        {% if not is_popup %}
+            <header id="header">
+                <div id="branding">
+                    {% block branding %}
+                    
+                    {% endblock %}
+                </div>
+                
+                {% block usertools %}
+                    {% if has_permission %}
+                        <div id="user-tools">
+                            
+                            <!--for => Welcome, shoumitro-->
+                            {% block welcome-msg %}
+                                {% trans 'Welcome,' %} <strong>  {% firstof user.get_short_name user.get_username %} </strong>.
+                            {% endblock %}
+                            
+                            
+                            {% block userlinks %}
+                            
+                                {% if site_url %}
+                                    <a href="{{ site_url }}">{% trans 'View FoodShop' %}</a> /
+                                {% endif %}
+                                
+                                {% if user.is_active and user.is_staff %}
+                                    {% url 'django-admindocs-docroot' as docsroot %}
+                                    {% if docsroot %}
+                                        <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if user.has_usable_password %}
+                                    <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+                                {% endif %}
+                                
+                                <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+                            {% endblock %}
+                            
+                        </div>
+                    {% endif %}
+                {% endblock %}
+                
+                {% block nav-global %}
+                  <!--some code here-->
+                {% endblock %}
+            </header>
+        {% endif %}
+       {% endblock %}
+            <!-- END Header -->
+        
+
+        <!-- Content -->
+        <div id="content" class="{% block coltype %}colM{% endblock %}">
+           {% block contentSide %}
+            <div class="content_side">
+                <div class="side_menu">
+                    <ul>
+                        <li> <a href="/admin/"><span class="fa fa-dashboard"></span>&nbsp;Dashboard</a></li>
+<!--                        <li><a href="/admin/auth/user/">Admin</a></li>-->
+                        <li><a href="{% url 'groupusers' %}"><span class="fa fa-adn"></span>&nbsp;Admin</a></li>
+                        <li><a href="/admin/auth/group/"><span class="fa fa-group"></span>&nbsp;Group</a></li>
+                        <!--<li><a href="/admin/admin_task/ad_products/">Products</a></li>-->
+                        <li><a href="{% url 'ad_products' %}"><span class="fa fa-product-hunt"></span>&nbsp;Products</a></li>
+                        <!--<li><a href="/admin/admin_task/orders/">Orders</a></li>-->
+                        <li><a href="{% url 'ad_orders' %}"><span class="fa fa-cart-arrow-down"></span>&nbsp;Orders</a></li>
+<!--                        <li><a href="/admin/public/users/">Users</a></li>-->
+                        <li><a href="{% url 'ad_users' %}"><span class="fa fa-user"></span>&nbsp;Users</a></li>
+                        <li><a href="/admin/public/discount/"><span class="fa fa-diamond"></span>&nbsp;Discount</a></li>
+                        <li><a href="/admin/public/category/"><span class="fa fa-cab"></span>&nbsp;Category</a></li>
+                        <li><a href="{% url 'analysis' %}"><span class="fa fa-area-chart"></span>&nbsp;Analysis</a></li>
+                    </ul>
+                </div>
+            </div>
+           {% endblock %}
+            <div class="content_body">
+                <div class="main_content_body {% block main_content_body_class %} {% endblock %}">
+                    
+                       <!-- for breadcrumbs menu example => Home › Public › Products -->
+                        {% block breadcrumbs %}
+                            <div class="breadcrumbs">
+                                <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+                                {% if title %}
+                                   &rsaquo; {{ title }}
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+
+                <!--    for message like => 1 Product was changed successfully.-->
+                      {% block messages %}
+                        {% if messages %}
+                            <ul class="messagelist">
+                                {% for message in messages %}
+                                   <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                                      {{ message|capfirst }}
+                                   </li>
+                               {% endfor %}
+                            </ul>
+                        {% endif %}
+                     {% endblock messages %}
+         
+                    
+                    <!--for pre title-->
+                    {% block pretitle %}
+                    {% endblock %}
+
+                    <!-- For main content title like => Dashboard -->
+                    {% block content_title %}
+                       {% if title %}
+                       <div class=" {% block title_class %} {% endblock %}"> <h1>{{ title }}</h1></div>
+                       {% endif %}
+                    {% endblock %}
+
+                    
+                        <!-- For main content like => public and auth content -->
+                        {% block content %}
+                            {% block object-tools %} {% endblock %}
+                            {{ content }}
+                        {% endblock %}
+
+                        <!-- For side bar like => Recent actions-->
+                        {% block sidebar %} {% endblock %}
+                    <br class="clear">
+                </div>
+            </div>
+        </div>
+        <!-- END Content -->
+    </div>
+</div>
+<!--Footer -->
+    {% block footer %}
+       <br/>
+       <br/>
+        <footer id="footer" class="footer">
+            <div class="footer_container">
+                <div class="footer_item">
+                    <h1 class="footer_item_title"> Product Information </h1>
+                    <ul>
+                        <li> <a href="">Products</a> </li>
+                        <li> <a href="">Stock Info</a> </li>
+                        <li> <a href="">Add New Product</a> </li>
+                        <li> <a href="">Product Pricing</a> </li>
+                        <li> <a href="">Comments</a> </li>
+                    </ul>
+                </div>
+                <div class="footer_item">
+                    <h1 class="footer_item_title"> Order Information </h1>
+                    <ul>
+                        <li><a href="">View Order</a></li>
+                        <li><a href="">Order Analysis</a></li>
+                        <li><a href="">Order Accept</a></li>
+                        <li><a href="">Pending Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer_item">
+                    <h1 class="footer_item_title"> User Information </h1>
+                    <ul>
+                        <li><a href="">Analysis</a></li>
+                        <li><a href="">Chart Analysis</a></li>
+                        <li><a href="">Table</a></li>
+                        <li><a href="">Active users</a></li>
+                        <li><a href="">User Contact Mails</a></li>
+                    </ul>
+                </div>
+                <div class="footer_item">
+                    <h1 class="footer_item_title"> Term & Privacy </h1>
+                    <ul>
+                        <li><a href="">Term</a></li>
+                        <li><a href="">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer_bottom">
+                © 2017-2020 foodshop.com. All rights reserved.
+            </div>
+        </footer>
+    {% endblock %}
+<!-- END Footer -->
+
+</body>
+</html>

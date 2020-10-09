@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+
+
+{% block breadcrumbs %}
+<!--   <div class="breadcrumbs">
+       <a href="{% url 'admin:index' %}">
+           {% trans 'Home' %}
+       </a>
+   </div>-->
+{% endblock %}
+
+
+
+{% block contentSide %}
+{% endblock %}
+
+
+
+{% block content %}
+<div style="min-width: 400px;margin: 0 auto;">
+    
+    <p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
+    <p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
+    <p>
+        <a href="{% url 'admin:index' %}">
+            {% trans 'Log in again' %}
+        </a>
+    </p>
+</div>
+{% endblock %}

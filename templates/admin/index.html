@@ -1,0 +1,181 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block coltype %}
+   colMS
+{% endblock %}
+
+{% block bodyclass %}
+   {{ block.super }}
+    dashboard
+{% endblock %}
+
+{% block breadcrumbs %}
+<!--   some code here-->
+{% endblock %}
+
+{% block title_class %} 
+  admin_dashboard 
+{% endblock %}
+
+
+<!--for main content-->
+{% block content %}
+<div class="main">
+ 
+ <!--comment this content-->   
+ {% comment %} 
+    <!--main content-->
+    <div class="dashboard_main" id="content-main">
+    {% if app_list %}
+        {% for app in app_list %}
+            <div class="app-{{ app.app_label }} module">
+            <table>
+            <caption>
+                <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
+            </caption>
+            {% for model in app.models %}
+                <tr class="model-{{ model.object_name|lower }}">
+                {% if model.admin_url %}
+                    <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
+                {% else %}
+                    <th scope="row">{{ model.name }}</th>
+                {% endif %}
+
+                {% if model.add_url %}
+                    <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
+                {% else %}
+                    <td>&nbsp;</td>
+                {% endif %}
+
+                {% if model.admin_url %}
+                    {% if model.view_only %}
+                    <td><a href="{{ model.admin_url }}" class="viewlink">{% trans 'View' %}</a></td>
+                    {% else %}
+                    <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
+                    {% endif %}
+                {% else %}
+                    <td>&nbsp;</td>
+                {% endif %}
+                </tr>
+            {% endfor %}
+            </table>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>{% trans 'You don’t have permission to view or edit anything.' %}</p>
+    {% endif %}
+    </div>  
+ {% endcomment %}
+ 
+ {# <h1>Comment this</h1> #}
+ 
+ 
+    <!--main content-->
+    <div class="dashboard_main" id="content-main">
+    {% if app_list %}
+        {% for app in app_list %}
+            
+        <div class="app-{{ app.app_label }} module">
+            
+            <h1 class="dashboard_list_heading" >
+                <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">
+                    {{ app.name }}
+                </a>
+            </h1>
+
+            {% comment %}
+                {% autoescape off %}
+                    {{calender}}
+                {% endautoescape %}
+            {% endcomment %}
+
+            <ul class="dashboard_list">
+            {% for model in app.models %}
+                <li class="model-{{ model.object_name|lower }}">
+                    <div class="dashboard_list_item">
+                        <div class="dashboard_list_row">
+                            {% if model.admin_url %}
+                            <span class="list_title" scope="row"><a href="{{ model.admin_url }}">{{ model.name}}</a></span>
+                            {% else %}
+                            <span class="list_title" scope="row">{{ model.name}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="dashboard_list_row">
+                          <div class="dashboard_list_row_content">
+                            <div class="dashboard_list_col">
+                              {% if model.add_url %}
+                                  <span><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></span>
+                              {% else %}
+                                  <span>&nbsp;</span>
+                              {% endif %}
+                            </div>
+
+                            <div class="dashboard_list_col">
+                              {% if model.admin_url %}
+                                  {% if model.view_only %}
+                                  <span><a href="{{ model.admin_url }}" class="viewlink">{% trans 'View' %}</a></span>
+                                  {% else %}
+                                  <span><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></span>
+                                  {% endif %}
+                              {% else %}
+                                  <span>&nbsp;</span>
+                              {% endif %}
+                            </div>
+                           </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>{% trans 'You don’t have permission to view or edit anything.' %}</p>
+    {% endif %}
+    </div>
+    
+    <!--side content-->
+    <div class="dashboard_side" id="content-related">
+        <div class="module" id="recent-actions-module">
+            <h2>{% trans 'Recent actions' %}</h2>
+            <h3>{% trans 'My actions' %}</h3>
+                {% load log %}
+                {% get_admin_log 10 as admin_log for_user user %}
+                {% if not admin_log %}
+                <p>{% trans 'None available' %}</p>
+                {% else %}
+                <ul class="actionlist">
+                {% for entry in admin_log %}
+                <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                    {% if entry.is_deletion or not entry.get_admin_url %}
+                        {{ entry.object_repr }}
+                    {% else %}
+                        <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                    {% endif %}
+                    <br>
+                    {% if entry.content_type %}
+                        <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+                    {% else %}
+                        <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+
+
+<!--for side content-->
+{% block sidebar %}
+{% endblock %}

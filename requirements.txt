@@ -1,0 +1,5 @@
+dj-database-url
+Django
+django-widget-tweaks
+Markdown
+python-decouple

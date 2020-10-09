@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+
+
+
+{% block title %}
+   {{ title }} | {{ site_title|default:_('Django site admin') }}
+{% endblock %}
+
+
+
+<!--for site name nav-->
+{% block branding %}
+    <div id="site-name">
+        <a class="admin_logo" href="{% url 'admin:index' %}">
+            <!--{{ site_header|default:_('Django administration') }}-->
+            <img src="/media/favicon1.jpg" alt="" title="{{ site_header|default:_('Django administration') }}" />
+        </a>
+    </div>
+{% endblock %}
+
+
+
+<!--for golbal nav menu-->
+{% block nav-global %}
+   
+{% endblock %}
