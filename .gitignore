@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.env
+venv/
+.idea
+staticfiles
+global_settings.py
+github.sh
+cmd.sh
+
+*.sqlite3 # Ignore All SQLite database files
