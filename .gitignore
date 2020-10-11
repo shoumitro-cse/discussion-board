@@ -7,5 +7,6 @@ staticfiles
 global_settings.py
 github.sh
 cmd.sh
+Git Cheat Sheet.pdf
 
 *.sqlite3 # Ignore All SQLite database files
