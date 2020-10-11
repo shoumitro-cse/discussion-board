@@ -161,5 +161,3 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'shoumitrocse@gmail.com'
-
-FAKE_VAR = 'Fake Variable'
