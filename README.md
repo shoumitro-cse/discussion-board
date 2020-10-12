@@ -1,2 +1,2 @@
 # discussion-board
-#Django project.
+#Django project
